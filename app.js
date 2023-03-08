@@ -31,12 +31,17 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems).then(function(){
-    console.log("Success");
-});
-
 app.get("/", function(req, res) {
-    res.render("list", {listTitle: "Today", newListItems: items});
+    Item.find({}).then(function(foundItems){
+        if (foundItems.length === 0) {
+            Item.insertMany(defaultItems).then(function(){
+            console.log("Success");
+            });
+        res.redirect("/");
+        }else {
+            res.render("list", {listTitle: "Today", newListItems: foundItems});
+        }
+    });
 });
 
 app.post("/", function(req, res){
