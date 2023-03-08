@@ -38,23 +38,22 @@ app.get("/", function(req, res) {
             console.log("Success");
             });
         res.redirect("/");
-        }else {
+
+        } else {
             res.render("list", {listTitle: "Today", newListItems: foundItems});
         }
     });
 });
 
 app.post("/", function(req, res){
+    const itemName = req.body.newItem;
 
-    const item = req.body.newItem;
+    const item = new Item({
+        name: itemName
+    });
+    item.save();
 
-    if (req.body.list === "Work") {
-        workItems.push(item);
-        res.redirect("/work");
-    } else {
-        items.push(item);
-        res.redirect("/");
-    }
+    res.redirect("/");
 });
 
 app.get("/work", function(req,res){
