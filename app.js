@@ -52,12 +52,22 @@ app.get("/", function(req, res) {
 
 app.post("/", function(req, res){
     const itemName = req.body.newItem;
+    const listName = req.body.list;
 
     const item = new Item({
         name: itemName
     });
-    item.save();
-    res.redirect("/");
+
+    if(listName === "Today"){
+        item.save();
+        res.redirect("/");
+    } else {
+        List.findOne({name: listName}).then(function(foundList){
+            foundList.items.push(item);
+            foundList.save();
+            res.redirect("/" + listName);
+        });
+    }
 });
 
 app.post("/delete", function(req, res){
@@ -84,9 +94,6 @@ app.get("/:customListName", function(req, res){
             res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
         }
     });
-
-
-
 });
 
 app.get("/about", function(req, res){
