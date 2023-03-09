@@ -14,7 +14,6 @@ mongoose.connect("mongodb://localhost:27017/todolistDB"), {useNewUrlParser: true
 const itemsSchema = {
     name: String
 };
-
 const Item = mongoose.model("Item", itemsSchema);
 
 const item1 = new Item({
@@ -28,8 +27,14 @@ const item2 = new Item({
 const item3 = new Item({
     name: "<-- Hit this to delete an item"
 });
-
 const defaultItems = [item1, item2, item3];
+
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+};
+const List = mongoose.model("List", listSchema); 
+
 
 app.get("/", function(req, res) {
     Item.find({}).then(function(foundItems){
@@ -64,8 +69,24 @@ app.post("/delete", function(req, res){
     });
 });
 
-app.get("/work", function(req,res){
-    res.render("list", {listTitle: "Work List", newListItems: workItems});
+app.get("/:customListName", function(req, res){
+    const customListName = req.params.customListName;
+
+    List.findOne({name: customListName}).then(function(foundList){
+        if(!foundList) {
+            const list = new List({
+                name: customListName,
+                items: defaultItems
+            }); 
+            list.save();
+            res.redirect("/" + customListName);
+        } else {
+            res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+        }
+    });
+
+
+
 });
 
 app.get("/about", function(req, res){
