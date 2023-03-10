@@ -80,7 +80,7 @@ app.post("/delete", function(req, res){
             res.redirect("/");
         });
     } else {
-        List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}).then(function(){
+        List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}).then(function(foundList){
             res.redirect("/" + listName);
         });
     } 
