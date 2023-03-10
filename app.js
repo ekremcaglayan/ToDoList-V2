@@ -39,12 +39,11 @@ const List = mongoose.model("List", listSchema);
 
 app.get("/", function(req, res) {
     Item.find({}).then(function(foundItems){
-        if (foundItems.length === 0) {
+        if (foundItems.length == 0) {
             Item.insertMany(defaultItems).then(function(){
-            console.log("Success");
+                console.log("Success");
             });
-        res.redirect("/");
-
+            res.redirect("/");
         } else {
             res.render("list", {listTitle: "Today", newListItems: foundItems});
         }
