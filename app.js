@@ -65,9 +65,8 @@ app.post("/", function(req, res){
     } else {
         List.findOne({name: listName}).then(function(foundList){
             foundList.items.push(item);
-            foundList.save(function(){
-                res.redirect("/" + listName);
-            });
+            foundList.save();
+            res.redirect("/" + listName);
         });
     }
 });
