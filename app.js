@@ -95,8 +95,9 @@ app.get("/:customListName", function(req, res){
                 name: customListName,
                 items: defaultItems
             }); 
-            list.save();
-            res.redirect("/" + customListName);
+            list.save().then(function(){
+                res.redirect("/" + customListName);
+            });
         } else {
             res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
         }
